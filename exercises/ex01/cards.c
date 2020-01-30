@@ -57,13 +57,12 @@ void handle_input() {
     char card_name[3];
     int count = 0;
     do {
+        int card_val = 0;
         puts("Enter the card_name: ");
         scanf("%2s", card_name);
-        int card_val = 0;
         if (card_name[0] != 'X') 
             card_val = card_value(card_name);
-
-        count = update_count(count, card_val);
+            count = update_count(count, card_val);
         printf("Current count: %i\n", count);
     } while (card_name[0] != 'X');
 }
