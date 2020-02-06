@@ -16,7 +16,6 @@ int sum_array(int * array, int array_len) {
     int total = 0;
     for (int i=0; i<array_len; i++) {
         total += array[i];
-        printf("%d\n", total);
     }
     return total;
 }
@@ -31,17 +30,16 @@ int sum_array(int * array, int array_len) {
 */
 int check_input_full(char * array, int size) {
     if (strlen(array) == (size-1) && array[size-2] != '\n') {
-            printf("Error: input is too long");
             return 1; // TODO: Should it keep going?
     }
     return 0;
 }
 
+/*
+    Takes input from user in the form of integers, stores the integers, and prints the sum.
+*/
 int main() {
-    int nums[20];
-    for (int i=0; i<20; i++) {
-        nums[i] = 0;
-    }
+    int nums[20] = {0};
     
     char user_input[13]; // TODO: Determine actual maximum length
     int i = 0;
@@ -51,17 +49,24 @@ int main() {
         puts("Enter an integer: ");
         input_success = fgets(user_input, 13, stdin);
         if (check_input_full(user_input, 13)) {
-            break;
-        }
-        int input_int = atoi(user_input);
-        if (input_int == 0) {
-            printf("Error: zero value or non-integer entered.");
+            puts("Error: input is too long");
+            do {
+                fgets(user_input, 13, stdin);
+                
+            } while (check_input_full(user_input, 13));
             continue;
         }
+
+        int input_int = atoi(user_input);
+        if (input_int == 0) {
+            puts("Error: zero value or non-integer entered.");
+            continue;
+        }
+        
         nums[i] = input_int;
         i++;
         if (i >= sizeof(nums)/4) {
-            printf("Maximum number of integers entered.");
+            puts("Maximum number of integers entered.");
             break;
         }
     } while (input_success != NULL);
