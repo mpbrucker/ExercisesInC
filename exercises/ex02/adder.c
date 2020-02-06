@@ -41,7 +41,7 @@ int check_input_full(char * array, int size) {
 int main() {
     int nums[20] = {0};
     
-    char user_input[13]; // TODO: Determine actual maximum length
+    char user_input[13];
     int i = 0;
     void * input_success;
 
@@ -62,7 +62,7 @@ int main() {
             puts("Error: zero value or non-integer entered.");
             continue;
         }
-        
+
         nums[i] = input_int;
         i++;
         if (i >= sizeof(nums)/4) {
