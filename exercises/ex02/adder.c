@@ -7,7 +7,7 @@ int input_to_int(char * input) {
 }
 
 /*
-    Sums thhe elements of an int array, and returns the total
+    Sums the elements of an int array, and returns the total
 
     array: an integer array containing the numbers to sum
     array_len: the length of the array
