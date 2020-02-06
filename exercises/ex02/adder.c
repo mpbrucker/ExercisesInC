@@ -22,11 +22,18 @@ int sum_array(int * array, int array_len) {
 
 int main() {
     int nums[20] = {0};
-    char user_input[12];
-    puts("Enter an integer: ");
-    while (fgets(user_input, sizeof(user_input), stdin) != NULL) {
+    char user_input[13]; // TODO: Determine actual maximum length
+    int i = 0;
+    void * input_success;
+
+    do {
         puts("Enter an integer: ");
+        input_success = fgets(user_input, 13, stdin);
+        if (strlen(user_input) == 12 && user_input[11] != '\n') {
+            printf("Error: input is too long");
+            break; // TODO: Should it keep going?
+        }
         int input_int = atoi(user_input);
-    } 
-    printf("Total: %d", sum_array(nums, sizeof(nums)))
+    } while (input_success != NULL);
+    printf("Total: %d", sum_array(nums, sizeof(nums)));
 }
