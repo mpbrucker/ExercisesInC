@@ -42,6 +42,8 @@ int main ()
 
 EXPERIMENTS:
 
+3. Memory diagram: https://photos.app.goo.gl/ukMHT4RHRbbw2Tor5
+
 4. The additional malloc does allocate a higher memory address, showing that the heap grows upward.
 
 5. The new local var is allocated at a lower address, showing that the stack grows down.
