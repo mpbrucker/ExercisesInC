@@ -43,17 +43,18 @@ void find_track_regex(char pattern[])
     if (regcomp(&re, pattern, 0) != 0) {
         printf("Error: invalid regex string");
         regfree(&re);
-        return;
+        exit(1);
     }
     for (int i=0; i < NUM_TRACKS; i++) {
         status = regexec(&re, tracks[i], (size_t) 0, NULL, 0);
-        if (status == 0) {
+        if (status == 0) { // successful match
             printf("Track %i: '%s'\n", i, tracks[i]);
         }else if (status != REG_NOMATCH) {
             printf("Error matching regex.");
+            exit(1);
         }
     }
-    regfree(&re);
+    regfree(&re); // Free up the memory used by the regex
 
 }
 
