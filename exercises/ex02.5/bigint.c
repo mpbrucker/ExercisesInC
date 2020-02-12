@@ -58,7 +58,7 @@ returns: character '0' to '9'
 */
 char itoc(int i) {
     //TODO: Fill this in, with an appropriate assertion.
-    return '0';
+    return '0' + i;
 }
 
 /* add_digits: Adds two decimal digits, returns the total and carry.
@@ -74,6 +74,9 @@ carry: pointer to char
 
 */
 void add_digits(char a, char b, char c, char *total, char *carry) {
+    int running_total = ctoi(a)+ctoi(b)+ctoi(c);
+    *total = itoc(running_total % 10);
+    *carry = itoc(running_total / 10);
     //TODO: Fill this in.
 }
 
