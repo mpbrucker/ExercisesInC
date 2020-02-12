@@ -38,22 +38,23 @@ void find_track(char search_for[])
 // Prints track number and title.
 void find_track_regex(char pattern[])
 {
-    // TODO: fill this in
     int status;
     regex_t re;
     if (regcomp(&re, pattern, 0) != 0) {
         printf("Error: invalid regex string");
+        regfree(&re);
         return;
     }
-    for (int i=0; i < sizeof(tracks)/4; i++) {
-        printf("%d",i);
+    for (int i=0; i < NUM_TRACKS; i++) {
         status = regexec(&re, tracks[i], (size_t) 0, NULL, 0);
         if (status == 0) {
             printf("Track %i: '%s'\n", i, tracks[i]);
         }else if (status != REG_NOMATCH) {
             printf("Error matching regex.");
         }
-    } // TODO what to divide sizeof by?
+    }
+    regfree(&re);
+
 }
 
 // Truncates the string at the first newline, if there is one.
