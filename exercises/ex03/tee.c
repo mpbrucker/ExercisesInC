@@ -1,18 +1,29 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
-void handle_input(FILE * streams[], int num_streams) {
+
+void handle_input(char * stream_names[], int num_streams, char * append) {
     size_t line_size = 0;
     char * buffer = NULL;
+    int has_opened = 0;
 
     while(1) {
         getline(&buffer, &line_size, stdin);
         printf("%s", buffer);
         for (int i=0; i < num_streams; i++) {
-            printf("%d", i);
-            fprintf(streams[i], "%s\n", buffer);
+            FILE * stream;
+            if (!has_opened) {
+                stream = fopen(stream_names[i], append);
+                has_opened = !has_opened;
+            } else {
+                stream = fopen(stream_names[i], "a");
+            }
+            fprintf(stream, "%s", buffer);
+            fclose(stream);
         }
     }
+    
 }
 
 int main(int argc, char * argv[]) {
@@ -42,18 +53,14 @@ int main(int argc, char * argv[]) {
     char * append_flag = append ? "a" : "w";
     int stream_num = 0;
     const int NUM_STREAMS = argc-optind;
-    FILE * streams[NUM_STREAMS];
+    char * stream_names[NUM_STREAMS];
 
     for (; optind < argc; optind++) {
-        streams[stream_num] = fopen(argv[optind], append_flag);
-        printf("%s\n",argv[optind]);
+        stream_names[stream_num] = argv[optind];
+        stream_num++;
     }
 
-    handle_input(streams, stream_num);
-
-    for (int i=0; i < NUM_STREAMS; i++) {
-        fclose(streams[i]);
-    }
+    handle_input(stream_names, NUM_STREAMS, append_flag);
 
     return 0;
 }
