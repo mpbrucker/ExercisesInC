@@ -14,7 +14,7 @@ void write_stream(char * stream_name, char * mode, char * buffer) {
     res = fprintf(stream, "%s", buffer);
     fclose(stream);
     if (stream == NULL || res == -1) {
-        printf("Error writing to file: %s", stream_name);
+        fprintf(stderr, "Error writing to file: %s", stream_name);
     }
 }
 
@@ -32,7 +32,7 @@ void handle_input(char * stream_names[], int num_streams, char * append) {
     while(1) {
         res = getline(&buffer, &line_size, stdin);
         if (res == -1) {
-            printf("Error reading input from stdin");
+            fprintf(stderr, "Error reading input from stdin");
             break;
         }
         printf("%s", buffer);
@@ -82,3 +82,13 @@ int main(int argc, char * argv[]) {
 
     return 0;
 }
+
+/*
+
+3. There were a lot of challenges involved with getting this running. One of the biggest problems I encountered was how to handle opening and closing multiple files without handling the SIGINT.
+In the future, I would definitely do a lot more assimilation before integration, because getting the file writing working actually ended up taking longer than I thought. If I had made each section work first, I could have avoided some headaches when trying to integrate everything.
+
+4. In general, their version seems to use a lot more low-level C functions. There are a lot more flags and error checking at each step of the process.
+
+
+*/
