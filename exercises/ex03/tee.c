@@ -3,6 +3,23 @@
 #include <string.h>
 
 
+//  Opens a file stream with a given file name in a specified mode, writes a buffer to it, and closes the filestream.
+//  stream_name: the filename of the stream.
+//  apppend: the character to specify the mode of the file (append vs. write)
+//  buffer: The buffer to write.
+//
+void write_stream(char * stream_name, char * mode, char * buffer) {
+    FILE * stream; 
+    stream = fopen(stream_name, mode);
+    fprintf(stream, "%s", buffer);
+    fclose(stream);
+}
+
+//  Handles the input loop of taking in input writing anad writing it to a list of filestreams.
+//  stream_names: the names of the files to write to.
+//  num_streams: the number of output streams.
+//  append: specifies whether to append or write to files.
+//
 void handle_input(char * stream_names[], int num_streams, char * append) {
     size_t line_size = 0;
     char * buffer = NULL;
@@ -12,15 +29,10 @@ void handle_input(char * stream_names[], int num_streams, char * append) {
         getline(&buffer, &line_size, stdin);
         printf("%s", buffer);
         for (int i=0; i < num_streams; i++) {
-            FILE * stream;
+            write_stream(stream_names[i], has_opened ? "a" : append, buffer);
             if (!has_opened) {
-                stream = fopen(stream_names[i], append);
                 has_opened = !has_opened;
-            } else {
-                stream = fopen(stream_names[i], "a");
             }
-            fprintf(stream, "%s", buffer);
-            fclose(stream);
         }
     }
     
@@ -30,16 +42,10 @@ int main(int argc, char * argv[]) {
     char ch;
     int append = 0;
 
-    while ((ch = getopt(argc, argv, "apohv")) != EOF) {
+    while ((ch = getopt(argc, argv, "av")) != EOF) {
         switch (ch) {
             case 'a':
                 append = 1;
-                break;
-            case 'p':
-                break;
-            case 'o':
-                break;
-            case 'h':
                 break;
             case 'v':
                 puts("tee version 0.1.");
