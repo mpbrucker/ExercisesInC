@@ -1,4 +1,6 @@
 #include "trout.h"
+#include <sys/types.h>
+#include <unistd.h>
 
 /* variables we might want to configure */
 int max_ttl = 30;
