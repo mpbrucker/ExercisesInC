@@ -75,10 +75,53 @@ float my_random_float2()
     return b.f;
 }
 
+typedef union box {
+    double d;
+    long l;
+} Box;
+/* GET_BIT: returns a random bit. For efficiency,
+bits are generated 31 at a time using the
+C library function random () */
+int get_bit ()
+{
+    int bit;
+    static int bits = 0;
+    static int x;
+    if (bits == 0) {
+        x = random();
+        bits = 31;
+    }
+    bit = x & 1;
+    x = x >> 1;
+    bits--;
+    return bit;
+}
+
 // compute a random double using my algorithm
 double my_random_double()
 {
-    // TODO: fill this in
+    long x;
+    long mant, exp, high_exp, low_exp;
+    Box low, high, ans;
+    low.d = 0.0;
+    high.d = 1.0;
+    /* extract the exponent fields from low and high */
+    low_exp = (low.l >> 52) & 0x7FF;
+    high_exp = (high.l >> 52) & 0x7FF;
+    /* choose random bits and decrement exp until a 1 appears.
+    the reason for subracting one from high_exp is left
+    as an exercise for the reader */
+    for (exp = high_exp-1; exp > low_exp; exp--) {
+        if (get_bit()) break;
+    }
+    /* choose a random 52-bit mantissa */
+    mant = random() & 0xFFFFFFF;
+    /* if the mantissa is zero, half the time we should move
+    to the next exponent range */
+    if (mant == 0 && get_bit()) exp++;
+    /* combine the exponent and the mantissa */
+    ans.l = (exp << 52) | mant;
+    return ans.d;
 }
 
 // return a constant (this is a dummy function for time trials)
