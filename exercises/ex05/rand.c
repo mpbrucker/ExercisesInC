@@ -5,6 +5,7 @@ License: MIT License https://opensource.org/licenses/MIT
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 
 // generate a random float using the algorithm described
 // at http://allendowney.com/research/rand
@@ -75,54 +76,44 @@ float my_random_float2()
     return b.f;
 }
 
-typedef union box {
-    double d;
-    long l;
-} Box;
-/* GET_BIT: returns a random bit. For efficiency,
-bits are generated 31 at a time using the
-C library function random () */
-int get_bit ()
+// alternative implementation of my algorithm that doesn't use
+// embedded assembly
+float my_random_double()
 {
-    int bit;
-    static int bits = 0;
-    static int x;
-    if (bits == 0) {
-        x = random();
-        bits = 31;
+    long long x;
+    long long mant;
+    long long exp = 1022;
+    long long mask = 1;
+
+    union {
+        double f;
+        long long int i;
+    } b;
+
+    // generate random bits until we see the first set bit
+    while (1) {
+        x = (random() << 32) | random();
+        if (x == 0) {
+            exp -= 63;
+        } else {
+            break;
+        }
     }
-    bit = x & 1;
-    x = x >> 1;
-    bits--;
-    return bit;
+
+    // find the location of the first set bit and compute the exponent
+    while (x & mask) {
+        mask <<= 1;
+        exp--;
+    }
+
+    // use the remaining bit as the mantissa
+    mant = x >> 11;
+    b.i = (exp << 52) | mant;
+
+    return b.f;
 }
 
-// compute a random double using my algorithm
-double my_random_double()
-{
-    long x;
-    long mant, exp, high_exp, low_exp;
-    Box low, high, ans;
-    low.d = 0.0;
-    high.d = 1.0;
-    /* extract the exponent fields from low and high */
-    low_exp = (low.l >> 52) & 0x7FF;
-    high_exp = (high.l >> 52) & 0x7FF;
-    /* choose random bits and decrement exp until a 1 appears.
-    the reason for subracting one from high_exp is left
-    as an exercise for the reader */
-    for (exp = high_exp-1; exp > low_exp; exp--) {
-        if (get_bit()) break;
-    }
-    /* choose a random 52-bit mantissa */
-    mant = random() & 0xFFFFFFF;
-    /* if the mantissa is zero, half the time we should move
-    to the next exponent range */
-    if (mant == 0 && get_bit()) exp++;
-    /* combine the exponent and the mantissa */
-    ans.l = (exp << 52) | mant;
-    return ans.d;
-}
+
 
 // return a constant (this is a dummy function for time trials)
 float dummy()
