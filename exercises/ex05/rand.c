@@ -86,7 +86,7 @@ float my_random_double()
     long long mask = 1;
 
     union {
-        double f;
+        double d;
         long long int i;
     } b;
 
@@ -94,7 +94,7 @@ float my_random_double()
     while (1) {
         x = (random() << 32) | random();
         if (x == 0) {
-            exp -= 63;
+            exp -= 1;
         } else {
             break;
         }
@@ -110,7 +110,7 @@ float my_random_double()
     mant = x >> 11;
     b.i = (exp << 52) | mant;
 
-    return b.f;
+    return b.d;
 }
 
 
