@@ -76,8 +76,8 @@ float my_random_float2()
     return b.f;
 }
 
-// alternative implementation of my algorithm that doesn't use
-// embedded assembly
+// Returns a random double
+// Quite a bit slower than random_double()!
 float my_random_double()
 {
     long long x;
@@ -94,7 +94,7 @@ float my_random_double()
     while (1) {
         x = (random() << 32) | random();
         if (x == 0) {
-            exp -= 1;
+            exp -= 63;
         } else {
             break;
         }
