@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
     int num_feeds = 5;
     char *search_phrase = argv[1];
     char var[255];
+    int status;
 
     for (int i=0; i<num_feeds; i++) {
         sprintf(var, "RSS_FEED=%s", feeds[i]);
@@ -50,12 +51,21 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        if (pid != 0) {
+        if (pid == 0) {
             int res = execle(PYTHON, PYTHON, SCRIPT, search_phrase, NULL, vars);
             if (res == -1) {
                 error("Can't run script.");
             }
         }
+
+        pid = wait(&status);
+        if (pid == -1) {
+            fprintf(stderr, "wait failed: %s\n", strerror(errno));
+            exit(1);
+        }
+
+        status = WEXITSTATUS(status);
+        printf("Child %d exited with error code %d.\n", pid, status);
 
     }
     return 0;
